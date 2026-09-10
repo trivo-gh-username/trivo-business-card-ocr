@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cardbox — log in</title>
+<meta name="theme-color" content="#1a2238" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="login-shell">
+  <form class="card login-card" id="loginForm">
+    <div class="wordmark"><span class="dot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brass);"></span> Cardbox</div>
+    <div class="sub">cards.utils.trivoailabs.com</div>
+    <div id="loginError"></div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="username" required />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password" required />
+    </div>
+    <button type="submit" class="btn btn-primary" id="loginBtn">Log in</button>
+  </form>
+</div>
+<script>
+  const form = document.getElementById('loginForm');
+  const errorBox = document.getElementById('loginError');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.innerHTML = '';
+    document.getElementById('loginBtn').disabled = true;
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed.');
+      window.location.href = '/';
+    } catch (err) {
+      errorBox.innerHTML = `<div class="status-banner error">${err.message}</div>`;
+      document.getElementById('loginBtn').disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

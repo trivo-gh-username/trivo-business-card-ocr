@@ -1,0 +1,59 @@
+# cardbox/docker-compose.yml
+#
+# Joins the shared `edge` network (created once by the edge project) so
+# Caddy can reach this app by container_name. The database stays on this
+# project's own internal-only network -- it never joins `edge`, so Caddy
+# (and every other app on the host) has no path to it. See ../edge/README.md.
+#
+# `app` pulls a prebuilt image from GHCR rather than building on the host.
+# GHCR_IMAGE is read from .env (docker compose auto-loads a .env file in
+# this directory for ${...} substitution in this file) -- see .env.example.
+# The image is built and pushed by .github/workflows/docker-build-push.yml.
+
+services:
+  app:
+    image: ${GHCR_IMAGE}
+    container_name: cardbox-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://cardbox:${POSTGRES_PASSWORD}@db:5432/cardbox
+    volumes:
+      - images:/data/images
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - edge
+      - internal
+
+  db:
+    image: postgres:16-alpine
+    container_name: cardbox-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=cardbox
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=cardbox
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cardbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+    # No `ports:` -- only reachable from other containers on the internal network.
+
+volumes:
+  db_data:
+  images:
+
+networks:
+  edge:
+    name: edge
+    external: true
+  internal:
+    driver: bridge
+    internal: true

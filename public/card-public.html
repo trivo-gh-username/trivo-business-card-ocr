@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Digital card</title>
+<meta name="theme-color" content="#1a2238" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<div class="public-card-shell" id="root">
+  <p class="lede">Loading…</p>
+</div>
+<script>
+(async function () {
+  const slug = window.location.pathname.split('/').pop();
+  const root = document.getElementById('root');
+  try {
+    const res = await fetch(`/api/public/cards/${slug}`);
+    if (!res.ok) throw new Error((await res.json()).error || 'Not found');
+    const c = await res.json();
+    const photo = c.front_image ? `/api/public/images/${c.front_image}` : '';
+    root.innerHTML = `
+      <div class="public-card">
+        ${photo ? `<img class="photo" src="${photo}" alt="" />` : ''}
+        <div class="body">
+          <h1>${c.name || 'Contact'}</h1>
+          <div class="role">${[c.designation, c.company].filter(Boolean).join(' · ')}</div>
+          ${(c.phones || []).map((p) => `<div>📞 ${p}</div>`).join('')}
+          ${(c.emails || []).map((e) => `<div>✉️ ${e}</div>`).join('')}
+          ${c.website ? `<div>🔗 <a href="${/^https?:/.test(c.website) ? c.website : 'https://' + c.website}" target="_blank">${c.website}</a></div>` : ''}
+          ${c.address ? `<div style="margin-top:8px;color:var(--graphite);font-size:13.5px;">${c.address}</div>` : ''}
+          <a href="/api/public/cards/${slug}/vcard" class="btn btn-brass" style="margin-top:18px;">Save to contacts</a>
+          <img class="qr" src="/api/public/cards/${slug}/qr" alt="QR code for this card" />
+        </div>
+      </div>`;
+  } catch (err) {
+    root.innerHTML = `<p class="lede">This card isn't available. ${err.message}</p>`;
+  }
+})();
+</script>
+</body>
+</html>

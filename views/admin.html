@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cardbox — admin</title>
+<meta name="theme-color" content="#1a2238" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/icon-192.png" />
+<link rel="icon" href="/icons/icon-192.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="wordmark"><span class="dot"></span>Cardbox</div>
+  <div class="sub"><span>Admin</span><span class="who" id="whoLine"></span></div>
+  <nav>
+    <a href="/">Scan</a>
+    <a href="/cards.html">All cards</a>
+    <a href="/admin.html" class="active">Admin</a>
+    <span class="logout-link" id="logoutLink" style="margin-left:auto;">Log out</span>
+  </nav>
+</header>
+
+<main>
+
+  <div class="card">
+    <h2>Gemini API</h2>
+    <p class="lede" id="keyStatus">Checking…</p>
+    <div class="field">
+      <label for="apiKeyInput">API key</label>
+      <input type="password" id="apiKeyInput" placeholder="Paste a new key to set or replace it" autocomplete="off" />
+    </div>
+    <button type="button" class="btn btn-brass" id="saveKeyBtn">Save key</button>
+    <div class="settings-saved-note" id="keySavedNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Model</h2>
+    <p class="lede">Fetched live from Google, so this list is always current — no hardcoded names to go stale.</p>
+    <div class="field">
+      <label for="modelSelect">Model used for reading cards</label>
+      <select id="modelSelect"><option>Loading…</option></select>
+    </div>
+    <button type="button" class="btn btn-brass" id="saveModelBtn">Save model</button>
+    <div class="settings-saved-note" id="modelSavedNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Users</h2>
+    <table class="admin-table" id="usersTable"><tbody></tbody></table>
+    <h2 style="margin-top:20px;">Add a user</h2>
+    <div class="field"><label>Email</label><input type="email" id="newUserEmail" /></div>
+    <div class="field"><label>Password</label><input type="password" id="newUserPassword" placeholder="At least 8 characters" /></div>
+    <div class="field">
+      <label>Role</label>
+      <select id="newUserRole">
+        <option value="editor">Editor — scan, edit, comment, export</option>
+        <option value="viewer">Viewer — browse and export only</option>
+        <option value="admin">Admin — full access, manage users & settings</option>
+      </select>
+    </div>
+    <button type="button" class="btn btn-brass" id="addUserBtn">Add user</button>
+    <div class="settings-saved-note" id="userSavedNote"></div>
+  </div>
+
+  <div class="card">
+    <h2>Audit log</h2>
+    <table class="admin-table" id="auditTable"><tbody></tbody></table>
+  </div>
+
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

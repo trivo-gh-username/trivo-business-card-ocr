@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cardbox — scan</title>
+<meta name="theme-color" content="#1a2238" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/icon-192.png" />
+<link rel="icon" href="/icons/icon-192.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="wordmark"><span class="dot"></span>Cardbox</div>
+  <div class="sub">
+    <span>Scan a card into the shared database</span>
+    <span class="who" id="whoLine"></span>
+  </div>
+  <nav>
+    <a href="/" class="active">Scan</a>
+    <a href="/cards.html">All cards</a>
+    <a href="#" id="adminLink" style="display:none;">Admin</a>
+    <span class="logout-link" id="logoutLink" style="margin-left:auto;">Log out</span>
+  </nav>
+</header>
+
+<main>
+  <div id="statusBanner"></div>
+  <div id="dupBanner"></div>
+
+  <div class="card" id="captureCard">
+    <h2>New card</h2>
+    <div class="capture-row">
+      <div class="capture-slot" id="frontSlot">
+        <span class="label">Front</span><span class="hint">Tap to capture</span>
+        <input type="file" accept="image/*" capture="environment" id="frontInput" />
+      </div>
+      <div class="capture-slot" id="backSlot">
+        <span class="label">Back (optional)</span><span class="hint">Tap to capture</span>
+        <input type="file" accept="image/*" capture="environment" id="backInput" />
+      </div>
+    </div>
+    <div class="upload-row">
+      <label class="upload-link">Upload front from gallery<input type="file" accept="image/*" id="frontUploadInput" /></label>
+      <label class="upload-link">Upload back from gallery<input type="file" accept="image/*" id="backUploadInput" /></label>
+    </div>
+    <button class="btn btn-primary" id="scanBtn" disabled>Read card</button>
+  </div>
+
+  <form class="card" id="reviewForm" style="display:none;">
+    <h2>Review details</h2>
+    <p class="lede" id="reviewLede">Fix anything the reader got wrong, then save.</p>
+
+    <div class="field"><label>Name</label><input type="text" id="fName" autocomplete="off" /></div>
+    <div class="field"><label>Designation</label><input type="text" id="fDesignation" autocomplete="off" /></div>
+    <div class="field"><label>Organisation</label><input type="text" id="fCompany" autocomplete="off" /></div>
+    <div class="field">
+      <label>Phone numbers</label>
+      <div id="phoneRows"></div>
+      <button type="button" class="add-row-btn" data-add="phones">+ Add another number</button>
+    </div>
+    <div class="field">
+      <label>Emails</label>
+      <div id="emailRows"></div>
+      <button type="button" class="add-row-btn" data-add="emails">+ Add another email</button>
+    </div>
+    <div class="field"><label>Website</label><input type="text" id="fWebsite" autocomplete="off" /></div>
+    <div class="field"><label>Address</label><textarea id="fAddress"></textarea></div>
+    <div class="field"><label>Notes</label><textarea id="fNotes" placeholder="Optional"></textarea></div>
+
+    <button type="submit" class="btn btn-brass">Save card</button>
+    <div style="height:8px"></div>
+    <button type="button" class="btn btn-ghost" id="cancelBtn">Discard</button>
+  </form>
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/scan.js"></script>
+<script>
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Cardbox — all cards</title>
+<meta name="theme-color" content="#1a2238" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/icon-192.png" />
+<link rel="icon" href="/icons/icon-192.png" />
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="wordmark"><span class="dot"></span>Cardbox</div>
+  <div class="sub"><span>Every card in the shared database</span><span class="who" id="whoLine"></span></div>
+  <nav>
+    <a href="/">Scan</a>
+    <a href="/cards.html" class="active">All cards</a>
+    <a href="#" id="adminLink" style="display:none;">Admin</a>
+    <span class="logout-link" id="logoutLink" style="margin-left:auto;">Log out</span>
+  </nav>
+</header>
+
+<main>
+  <div class="search-bar"><input type="text" id="searchInput" placeholder="Search by name, company, phone, email…" autocomplete="off" /></div>
+
+  <div class="filter-row">
+    <button type="button" class="chip active" data-filter="all">All</button>
+    <button type="button" class="chip" data-filter="trash" id="trashChip" style="display:none;">Trash</button>
+    <select id="engineFilter">
+      <option value="">Any reader</option>
+      <option value="gemini">Gemini</option>
+      <option value="tesseract">On-device OCR</option>
+      <option value="manual">Manual entry</option>
+    </select>
+    <select id="sortSelect">
+      <option value="created_at">Newest first</option>
+      <option value="name">Name (A–Z)</option>
+      <option value="company">Company (A–Z)</option>
+      <option value="updated_at">Recently updated</option>
+    </select>
+  </div>
+
+  <div class="count-line">
+    <span id="countLine"></span>
+    <span>
+      <a href="#" id="exportCsv" class="add-row-btn">Export CSV</a> ·
+      <a href="#" id="exportJson" class="add-row-btn">Export JSON</a>
+    </span>
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+  <div class="pagination" id="pagination"></div>
+</main>
+
+<!-- Detail sheet -->
+<div class="sheet-overlay" id="sheetOverlay">
+  <div class="sheet" id="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-body">
+      <div class="card-photos" id="cardPhotos"></div>
+      <div class="sheet-tags" id="sheetTags"></div>
+
+      <div id="viewMode">
+        <h2 id="viewName">—</h2>
+        <p class="view-sub" id="viewSub"></p>
+        <div class="detail-grid" id="detailGrid"></div>
+
+        <div class="sheet-actions" id="sheetActions"></div>
+
+        <div id="shareBox" style="margin-top:16px;"></div>
+
+        <h2 style="margin-top:22px;">Comments</h2>
+        <div class="comments-list" id="commentsList"></div>
+        <form class="comment-form" id="commentForm">
+          <input type="text" id="commentInput" placeholder="Add a comment…" autocomplete="off" />
+          <button type="submit" class="btn btn-brass btn-sm">Post</button>
+        </form>
+      </div>
+
+      <form id="editMode" style="display:none;">
+        <div class="field"><label>Name</label><input type="text" id="eName" /></div>
+        <div class="field"><label>Designation</label><input type="text" id="eDesignation" /></div>
+        <div class="field"><label>Organisation</label><input type="text" id="eCompany" /></div>
+        <div class="field">
+          <label>Phone numbers</label>
+          <div id="ePhoneRows"></div>
+          <button type="button" class="add-row-btn" data-add="ePhones">+ Add another number</button>
+        </div>
+        <div class="field">
+          <label>Emails</label>
+          <div id="eEmailRows"></div>
+          <button type="button" class="add-row-btn" data-add="eEmails">+ Add another email</button>
+        </div>
+        <div class="field"><label>Website</label><input type="text" id="eWebsite" /></div>
+        <div class="field"><label>Address</label><textarea id="eAddress"></textarea></div>
+        <div class="field"><label>Notes</label><textarea id="eNotes"></textarea></div>
+        <button type="submit" class="btn btn-brass">Save changes</button>
+        <div style="height:8px"></div>
+        <button type="button" class="btn btn-ghost" id="cancelEditBtn">Cancel</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/cards.js"></script>
+<script>
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>
